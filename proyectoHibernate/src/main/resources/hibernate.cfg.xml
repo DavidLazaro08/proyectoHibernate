@@ -15,7 +15,10 @@
         <property name="show_sql">true</property>
         <property name="hbm2ddl.auto">update</property>
 
+        <mapping class="es.refugio.entities.Persona"/>
         <mapping class="es.refugio.entities.Animal"/>
+        <mapping class="es.refugio.entities.Clasificacion"/>
+
 
     </session-factory>
 </hibernate-configuration>

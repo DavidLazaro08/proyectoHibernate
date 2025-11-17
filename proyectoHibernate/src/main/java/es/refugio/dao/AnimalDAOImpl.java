@@ -11,64 +11,88 @@ public class AnimalDAOImpl implements AnimalDAO {
 
     @Override
     public List<Animal> findAll() {
-        Session session = HibernateUtil.getSessionFactory().openSession();
-        List<Animal> lista = session.createQuery("from Animal", Animal.class).list();
-        session.close();
+        Session s = HibernateUtil.getSessionFactory().openSession();
+        List<Animal> lista = s.createQuery("from Animal", Animal.class).list();
+        s.close();
         return lista;
     }
 
     @Override
     public Animal findById(Long id) {
-        Session session = HibernateUtil.getSessionFactory().openSession();
-        Animal animal = session.find(Animal.class, id);
-        session.close();
-        return animal;
+        Session s = HibernateUtil.getSessionFactory().openSession();
+        Animal a = s.find(Animal.class, id);
+        s.close();
+        return a;
     }
 
     @Override
     public List<Animal> findByEspecie(String especie) {
-        Session session = HibernateUtil.getSessionFactory().openSession();
-        List<Animal> lista = session.createQuery(
+        Session s = HibernateUtil.getSessionFactory().openSession();
+
+        List<Animal> lista = s.createQuery(
                         "from Animal where especie = :especie", Animal.class)
                 .setParameter("especie", especie)
                 .list();
-        session.close();
+
+        s.close();
+        return lista;
+    }
+
+    @Override
+    public List<Animal> findByDuenio(Long personaId) {
+        Session s = HibernateUtil.getSessionFactory().openSession();
+
+        List<Animal> lista = s.createQuery(
+                        "from Animal where duenio.id = :id", Animal.class)
+                .setParameter("id", personaId)
+                .list();
+
+        s.close();
         return lista;
     }
 
     @Override
     public Animal create(Animal animal) {
-        Session session = HibernateUtil.getSessionFactory().openSession();
-        Transaction tx = session.beginTransaction();
-        session.persist(animal);
+        Session s = HibernateUtil.getSessionFactory().openSession();
+        Transaction tx = s.beginTransaction();
+
+        s.persist(animal);
+
         tx.commit();
-        session.close();
+        s.close();
+
         return animal;
     }
 
     @Override
     public Animal update(Animal animal) {
-        Session session = HibernateUtil.getSessionFactory().openSession();
-        Transaction tx = session.beginTransaction();
-        session.merge(animal);
+        Session s = HibernateUtil.getSessionFactory().openSession();
+        Transaction tx = s.beginTransaction();
+
+        s.merge(animal);
+
         tx.commit();
-        session.close();
+        s.close();
+
         return animal;
     }
 
     @Override
     public boolean deleteById(Long id) {
-        Session session = HibernateUtil.getSessionFactory().openSession();
-        Transaction tx = session.beginTransaction();
-        Animal animal = session.find(Animal.class, id);
-        if (animal != null) {
-            session.remove(animal);
+        Session s = HibernateUtil.getSessionFactory().openSession();
+        Transaction tx = s.beginTransaction();
+
+        Animal a = s.find(Animal.class, id);
+
+        if (a != null) {
+            s.remove(a);
             tx.commit();
-            session.close();
+            s.close();
             return true;
         }
+
         tx.commit();
-        session.close();
+        s.close();
         return false;
     }
 }

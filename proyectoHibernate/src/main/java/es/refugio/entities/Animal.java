@@ -1,11 +1,12 @@
 package es.refugio.entities;
 
 import jakarta.persistence.*;
-import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "animal")
-public class Animal implements Serializable {
+public class Animal {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,11 +21,22 @@ public class Animal implements Serializable {
 
     private String estado;
 
-    // Constructor vacío
-    public Animal() {
-    }
+    // ⭐ MANY TO ONE → Un animal tiene un dueño
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "persona_id")
+    private Persona duenio;
 
-    // Constructor completo
+    // ⭐ MANY TO MANY → Un animal tiene varias clasificaciones
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(
+            name = "animal_clasificacion",
+            joinColumns = @JoinColumn(name = "animal_id"),
+            inverseJoinColumns = @JoinColumn(name = "clasificacion_id")
+    )
+    private Set<Clasificacion> clasificaciones = new HashSet<>();
+
+    public Animal() {}
+
     public Animal(String nombre, String especie, int edad, String descripcion, String estado) {
         this.nombre = nombre;
         this.especie = especie;
@@ -33,53 +45,33 @@ public class Animal implements Serializable {
         this.estado = estado;
     }
 
-    // Getters
-    public Long getId() {
-        return id;
-    }
+    public Long getId() { return id; }
 
-    public String getNombre() {
-        return nombre;
-    }
+    public String getNombre() { return nombre; }
 
-    public String getEspecie() {
-        return especie;
-    }
+    public void setNombre(String nombre) { this.nombre = nombre; }
 
-    public int getEdad() {
-        return edad;
-    }
+    public String getEspecie() { return especie; }
 
-    public String getDescripcion() {
-        return descripcion;
-    }
+    public void setEspecie(String especie) { this.especie = especie; }
 
-    public String getEstado() {
-        return estado;
-    }
+    public int getEdad() { return edad; }
 
-    // Setters
-    public void setId(Long id) {
-        this.id = id;
-    }
+    public void setEdad(int edad) { this.edad = edad; }
 
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
+    public String getDescripcion() { return descripcion; }
 
-    public void setEspecie(String especie) {
-        this.especie = especie;
-    }
+    public void setDescripcion(String descripcion) { this.descripcion = descripcion; }
 
-    public void setEdad(int edad) {
-        this.edad = edad;
-    }
+    public String getEstado() { return estado; }
 
-    public void setDescripcion(String descripcion) {
-        this.descripcion = descripcion;
-    }
+    public void setEstado(String estado) { this.estado = estado; }
 
-    public void setEstado(String estado) {
-        this.estado = estado;
-    }
+    public Persona getDuenio() { return duenio; }
+
+    public void setDuenio(Persona duenio) { this.duenio = duenio; }
+
+    public Set<Clasificacion> getClasificaciones() { return clasificaciones; }
+
+    public void setClasificaciones(Set<Clasificacion> clasificaciones) { this.clasificaciones = clasificaciones; }
 }

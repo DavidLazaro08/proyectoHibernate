@@ -11,6 +11,8 @@ public interface AnimalDAO {
 
     List<Animal> findByEspecie(String especie);
 
+    List<Animal> findByDuenio(Long personaId);
+
     Animal create(Animal animal);
 
     Animal update(Animal animal);
